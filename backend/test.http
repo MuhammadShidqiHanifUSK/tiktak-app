@@ -1,13 +1,30 @@
-### Tambah soal
-POST http://localhost:5000/api/soal/
+### Submit jawaban siswa (benar)
+POST http://localhost:5000/api/sesi/
 Content-Type: application/json
 
 {
-  "cerita": "Pak Budi berangkat ke sawah pagi-pagi bersama anaknya menggunakan sepeda pada pukul 06.30. Mereka melewati sungai dan hutan, hingga tibalah mereka di sawah pada pukul 07.00.",
-  "jawaban_jam": 7,
-  "jawaban_menit": 0,
-  "tingkat_kesulitan": 1
+    "siswa_id": 1,
+    "soal_id": 1,
+    "jawaban_jam": 7,
+    "jawaban_menit": 0,
+    "waktu_respons": 8.5,
+    "jumlah_koreksi": 1,
+    "jumlah_ulang_audio": 0
 }
 
-### Ambil soal level 1
-GET http://localhost:5000/api/soal/?tingkat=1
+### Submit jawaban siswa (salah)
+POST http://localhost:5000/api/sesi/
+Content-Type: application/json
+
+{
+  "siswa_id": 1,
+  "soal_id": 1,
+  "jawaban_jam": 6,
+  "jawaban_menit": 30,
+  "waktu_respons": 15.2,
+  "jumlah_koreksi": 3,
+  "jumlah_ulang_audio": 2
+}
+
+### Riwayat sesi siswa
+GET http://localhost:5000/api/sesi/siswa/1

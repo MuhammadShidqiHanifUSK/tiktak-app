@@ -6,6 +6,7 @@ from auth import auth_bp
 from kelas import kelas_bp
 from siswa import siswa_bp
 from soal import soal_bp
+from sesi import sesi_bp
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'tiktak-secret-key'
@@ -14,6 +15,7 @@ app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(kelas_bp, url_prefix='/api/kelas')
 app.register_blueprint(siswa_bp, url_prefix='/api/siswa')
 app.register_blueprint(soal_bp, url_prefix='/api/soal')
+app.register_blueprint(sesi_bp, url_prefix='/api/sesi')
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Inisialisasi database saat app pertama jalan
