@@ -1,11 +1,13 @@
-### Tambah siswa
-POST http://localhost:5000/api/siswa/
+### Tambah soal
+POST http://localhost:5000/api/soal/
 Content-Type: application/json
 
 {
-  "kelas_id": 1,
-  "nama": "Budi Santoso"
+  "cerita": "Pak Budi berangkat ke sawah pagi-pagi bersama anaknya menggunakan sepeda pada pukul 06.30. Mereka melewati sungai dan hutan, hingga tibalah mereka di sawah pada pukul 07.00.",
+  "jawaban_jam": 7,
+  "jawaban_menit": 0,
+  "tingkat_kesulitan": 1
 }
 
-### Ambil semua siswa
-GET http://localhost:5000/api/siswa/?kelas_id=1
+### Ambil soal level 1
+GET http://localhost:5000/api/soal/?tingkat=1
