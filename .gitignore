@@ -1,5 +1,6 @@
 # Database
 backend/tiktak.db
+backend/tiktak.db-journal
 
 # Audio files
 backend/audio/
