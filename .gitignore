@@ -1,0 +1,19 @@
+# Database
+backend/tiktak.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Conda / Virtual env
+env/
+venv/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
