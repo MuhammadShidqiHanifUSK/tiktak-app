@@ -3,11 +3,13 @@ from flask_cors import CORS
 from flask_socketio import SocketIO
 from database import init_db
 from auth import auth_bp
+from kelas import kelas_bp
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'tiktak-secret-key'
 CORS(app)
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
+app.register_blueprint(kelas_bp, url_prefix='/api/kelas')
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Inisialisasi database saat app pertama jalan

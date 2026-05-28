@@ -1,21 +1,12 @@
-### Test server
-GET http://localhost:5000
-
-### Register guru
-POST http://localhost:5000/api/auth/register
+### Tambah kelas
+POST http://localhost:5000/api/kelas/
 Content-Type: application/json
 
 {
-  "nama": "Hanif",
-  "email": "hanif@gmail.com",
-  "password": "hanif123"
+    "guru_id": 1,
+    "nama_kelas": "Kelas 3A",
+    "tingkatan": "3"
 }
 
-### Login guru
-POST http://localhost:5000/api/auth/login
-Content-Type: application/json
-
-{
-  "email": "hanif@gmail.com",
-  "password": "hanif123"
-}
+### Ambil semua kelas guru
+GET http://localhost:5000/api/kelas/?guru_id=1
