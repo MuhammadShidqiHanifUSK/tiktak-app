@@ -1,6 +1,9 @@
 # Database
 backend/tiktak.db
 
+# Audio files
+backend/audio/
+
 # Python
 __pycache__/
 *.pyc
