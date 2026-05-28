@@ -1,30 +1,8 @@
-### Submit jawaban siswa (benar)
-POST http://localhost:5000/api/sesi/
-Content-Type: application/json
+### Ringkasan kelas
+GET http://localhost:5000/api/dashboard/kelas/1
 
-{
-    "siswa_id": 1,
-    "soal_id": 1,
-    "jawaban_jam": 7,
-    "jawaban_menit": 0,
-    "waktu_respons": 8.5,
-    "jumlah_koreksi": 1,
-    "jumlah_ulang_audio": 0
-}
+### Detail performa siswa
+GET http://localhost:5000/api/dashboard/siswa/1
 
-### Submit jawaban siswa (salah)
-POST http://localhost:5000/api/sesi/
-Content-Type: application/json
-
-{
-  "siswa_id": 1,
-  "soal_id": 1,
-  "jawaban_jam": 6,
-  "jawaban_menit": 30,
-  "waktu_respons": 15.2,
-  "jumlah_koreksi": 3,
-  "jumlah_ulang_audio": 2
-}
-
-### Riwayat sesi siswa
-GET http://localhost:5000/api/sesi/siswa/1
+### Siswa yang perlu perhatian
+GET http://localhost:5000/api/dashboard/perhatian/1
