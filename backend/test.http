@@ -1,0 +1,21 @@
+### Test server
+GET http://localhost:5000
+
+### Register guru
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "nama": "Hanif",
+  "email": "hanif@gmail.com",
+  "password": "hanif123"
+}
+
+### Login guru
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "hanif@gmail.com",
+  "password": "hanif123"
+}
