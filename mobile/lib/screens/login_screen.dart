@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/session.dart';
 import '../services/api_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -29,11 +29,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (result['success']) {
         // Simpan data guru ke local storage
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setInt('guru_id', result['data']['id']);
-        await prefs.setString('guru_nama', result['data']['nama']);
-        await prefs.setString('guru_email', result['data']['email']);
-
+        Session.login(
+          result['data']['id'],
+          result['data']['nama'],
+          result['data']['email'],
+        );
         // Pindah ke halaman dashboard
         if (mounted) {
           Navigator.pushReplacementNamed(context, '/dashboard');
