@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
+import 'screens/dashboard_screen.dart';
 
 void main() {
   runApp(const TikTakApp());
@@ -24,6 +25,7 @@ class TikTakApp extends StatelessWidget {
       routes: {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
+        '/dashboard': (context) => const DashboardScreen(),
         // halaman lain akan ditambahkan nanti
       },
     );
