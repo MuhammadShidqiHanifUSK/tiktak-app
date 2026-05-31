@@ -18,6 +18,9 @@ venv/
 # VS Code
 .vscode/
 
+# Android Studio
+.idea/
+
 # OS
 .DS_Store
 Thumbs.db
