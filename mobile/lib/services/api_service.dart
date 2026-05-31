@@ -105,4 +105,36 @@ class ApiService {
     );
     return jsonDecode(response.body);
   }
+
+  static Future<Map<String, dynamic>> submitJawaban({
+    required int siswaId,
+    required int soalId,
+    required int jawabanJam,
+    required int jawabanMenit,
+    required double waktuRespons,
+    required int jumlahKoreksi,
+    required int jumlahUlangAudio,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/sesi/'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'siswa_id': siswaId,
+        'soal_id': soalId,
+        'jawaban_jam': jawabanJam,
+        'jawaban_menit': jawabanMenit,
+        'waktu_respons': waktuRespons,
+        'jumlah_koreksi': jumlahKoreksi,
+        'jumlah_ulang_audio': jumlahUlangAudio,
+      }),
+    );
+    return jsonDecode(response.body);
+  }
+
+  static Future<Map<String, dynamic>> getSoal(int tingkat) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/soal/?tingkat=$tingkat'),
+    );
+    return jsonDecode(response.body);
+  }
 }

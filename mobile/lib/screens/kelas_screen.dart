@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import 'siswa_screen.dart';
+import 'jam_screen.dart';
 
 class KelasScreen extends StatefulWidget {
   final Map<String, dynamic> kelas;
@@ -39,7 +40,6 @@ class _KelasScreenState extends State<KelasScreen> {
 
   Future<void> _tambahSiswa() async {
     final namaController = TextEditingController();
-
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -76,6 +76,35 @@ class _KelasScreenState extends State<KelasScreen> {
   Future<void> _hapusSiswa(int siswaId) async {
     await ApiService.deleteSiswa(siswaId);
     _loadSiswa();
+  }
+
+  Future<void> _mulaiBelajar(Map<String, dynamic> siswa) async {
+    try {
+      final result = await ApiService.getSoal(siswa['level_kemampuan']);
+      if (result['success']) {
+        if (mounted) {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => JamScreen(
+                siswa: siswa,
+                soal: result['data'],
+              ),
+            ),
+          );
+          // Reload data siswa setelah kembali
+          _loadSiswa();
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Tidak ada soal tersedia!')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Gagal memuat soal!')),
+      );
+    }
   }
 
   String _getLevelLabel(int level) {
@@ -138,7 +167,9 @@ class _KelasScreenState extends State<KelasScreen> {
                     itemBuilder: (context, index) {
                       final siswa = siswaList[index];
                       final akurasi = siswa['total_soal'] > 0
-                          ? (siswa['total_benar'] / siswa['total_soal'] * 100)
+                          ? (siswa['total_benar'] /
+                                  siswa['total_soal'] *
+                                  100)
                               .toStringAsFixed(1)
                           : '0.0';
                       return Card(
@@ -146,71 +177,94 @@ class _KelasScreenState extends State<KelasScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.all(16),
-                          leading: CircleAvatar(
-                            backgroundColor:
-                                _getLevelColor(siswa['level_kemampuan']),
-                            child: Text(
-                              siswa['nama'][0],
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          title: Text(
-                            siswa['nama'],
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 4),
-                              Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                              child: Row(
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: _getLevelColor(
-                                          siswa['level_kemampuan']),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
+                                  CircleAvatar(
+                                    backgroundColor:
+                                        _getLevelColor(siswa['level_kemampuan']),
                                     child: Text(
-                                      _getLevelLabel(siswa['level_kemampuan']),
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 12),
+                                      siswa['nama'][0],
+                                      style: const TextStyle(color: Colors.white),
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text('Akurasi: $akurasi%'),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          siswa['nama'],
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: _getLevelColor(
+                                                    siswa['level_kemampuan']),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Text(
+                                                _getLevelLabel(
+                                                    siswa['level_kemampuan']),
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 12),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text('Akurasi: $akurasi%'),
+                                          ],
+                                        ),
+                                        Text(
+                                            '${siswa['total_benar']}/${siswa['total_soal']} soal benar'),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
-                              Text(
-                                  '${siswa['total_benar']}/${siswa['total_soal']} soal benar'),
-                            ],
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.bar_chart,
-                                    color: Color(0xFF1A237E)),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          SiswaScreen(siswa: siswa),
-                                    ),
-                                  );
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete,
-                                    color: Colors.red),
-                                onPressed: () => _hapusSiswa(siswa['id']),
-                              ),
-                            ],
-                          ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.play_circle,
+                                      color: Colors.green),
+                                  onPressed: () => _mulaiBelajar(siswa),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.bar_chart,
+                                      color: Color(0xFF1A237E)),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            SiswaScreen(siswa: siswa),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red),
+                                  onPressed: () => _hapusSiswa(siswa['id']),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       );
                     },
