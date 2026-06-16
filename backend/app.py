@@ -8,6 +8,7 @@ from siswa import siswa_bp
 from soal import soal_bp
 from sesi import sesi_bp
 from dashboard import dashboard_bp
+from iot import iot_bp
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'tiktak-secret-key'
@@ -18,6 +19,7 @@ app.register_blueprint(siswa_bp, url_prefix='/api/siswa')
 app.register_blueprint(soal_bp, url_prefix='/api/soal')
 app.register_blueprint(sesi_bp, url_prefix='/api/sesi')
 app.register_blueprint(dashboard_bp, url_prefix='/api/dashboard')
+app.register_blueprint(iot_bp, url_prefix='/api/iot')
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Inisialisasi database saat app pertama jalan

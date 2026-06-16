@@ -137,4 +137,15 @@ class ApiService {
     );
     return jsonDecode(response.body);
   }
+
+
+  // ========== RESET JAM ==========
+  static Future<Map<String, dynamic>> resetJam(int siswaId) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/iot/reset'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'siswa_id': siswaId}),
+    );
+    return jsonDecode(response.body);
+  }
 }

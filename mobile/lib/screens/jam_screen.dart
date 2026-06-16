@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
+import 'dart:convert';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import '../services/api_service.dart';
 
 class JamScreen extends StatefulWidget {
@@ -22,28 +24,35 @@ class _JamScreenState extends State<JamScreen> {
   bool _sudahSubmit = false;
   bool _audioDiputar = false;
   bool _sedangBerbicara = false;
+  bool _iotTerhubung = false;
+  WebSocketChannel? _channel;
 
   static const _ttsChannel = MethodChannel('com.tiktak/tts');
+
+  // Ganti dengan IP laptop kamu
+  static const String _serverIp = '10.247.102.109';
 
   @override
   void initState() {
     super.initState();
     _startTime = DateTime.now();
     _setupTts();
+    _connectWebSocket();
+  }
+
+  @override
+  void dispose() {
+    _stopTts();
+    _channel?.sink.close();
+    super.dispose();
   }
 
   Future<void> _setupTts() async {
     try {
       await _ttsChannel.invokeMethod('setup', {'language': 'id-ID', 'rate': 0.45});
     } catch (e) {
-      // TTS tidak tersedia, lanjut tanpa suara
+      // TTS tidak tersedia
     }
-  }
-
-  @override
-  void dispose() {
-    _stopTts();
-    super.dispose();
   }
 
   Future<void> _stopTts() async {
@@ -51,6 +60,55 @@ class _JamScreenState extends State<JamScreen> {
       await _ttsChannel.invokeMethod('stop');
     } catch (e) {
       // ignore
+    }
+  }
+
+  void _connectWebSocket() {
+    try {
+      _channel = WebSocketChannel.connect(
+        Uri.parse('ws://$_serverIp:5000/socket.io/?EIO=4&transport=websocket'),
+      );
+      _channel!.stream.listen(
+        (message) {
+          try {
+            // Socket.IO mengirim pesan dalam format tertentu
+            if (message.toString().startsWith('42')) {
+              final jsonStr = message.toString().substring(2);
+              final parsed = jsonDecode(jsonStr);
+              if (parsed is List && parsed[0] == 'jam_update') {
+                final data = parsed[1];
+                if (data['siswa_id'] == widget.siswa['id']) {
+                  setState(() {
+                    _iotTerhubung = true;
+                    _jamAngle = (data['sudut_jam'] as num).toDouble() * math.pi / 180;
+                    _menitAngle = (data['sudut_menit'] as num).toDouble() * math.pi / 180;
+                    _jumlahKoreksi = data['jumlah_koreksi'] ?? _jumlahKoreksi;
+                  });
+                }
+              } else if (parsed is List && parsed[0] == 'jam_reset') {
+                final data = parsed[1];
+                if (data['siswa_id'] == widget.siswa['id']) {
+                  setState(() {
+                    _jamAngle = 0;
+                    _menitAngle = 0;
+                    _jumlahKoreksi = 0;
+                  });
+                }
+              }
+            }
+          } catch (e) {
+            // ignore parse error
+          }
+        },
+        onError: (e) {
+          setState(() => _iotTerhubung = false);
+        },
+        onDone: () {
+          setState(() => _iotTerhubung = false);
+        },
+      );
+    } catch (e) {
+      setState(() => _iotTerhubung = false);
     }
   }
 
@@ -100,6 +158,9 @@ class _JamScreenState extends State<JamScreen> {
       jumlahKoreksi: _jumlahKoreksi,
       jumlahUlangAudio: _jumlahUlangAudio,
     );
+
+    // Reset jam di IoT setelah submit
+    await ApiService.resetJam(widget.siswa['id']);
 
     if (mounted) {
       showDialog(
@@ -158,6 +219,29 @@ class _JamScreenState extends State<JamScreen> {
           style: const TextStyle(color: Colors.white),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+          // Indikator IoT
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.sensors,
+                  color: _iotTerhubung ? Colors.greenAccent : Colors.white38,
+                  size: 20,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  _iotTerhubung ? 'IoT' : 'Manual',
+                  style: TextStyle(
+                    color: _iotTerhubung ? Colors.greenAccent : Colors.white38,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -216,9 +300,11 @@ class _JamScreenState extends State<JamScreen> {
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
-            const Text(
-              'Sentuh dan geser jarum pada jam',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+            Text(
+              _iotTerhubung
+                  ? 'Putar jarum jam fisik'
+                  : 'Sentuh dan geser jarum pada jam',
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -231,39 +317,42 @@ class _JamScreenState extends State<JamScreen> {
                   final center = Offset(size.width / 2, size.height / 2);
                   final radius = size.width / 2;
                   return GestureDetector(
-                    onPanUpdate: (details) {
-                      final angle = math.atan2(
-                            details.localPosition.dy - center.dy,
-                            details.localPosition.dx - center.dx,
-                          ) +
-                          math.pi / 2;
-                      final normalizedAngle =
-                          angle < 0 ? angle + 2 * math.pi : angle;
-                      final jamX =
-                          center.dx + (radius * 0.5) * math.sin(_jamAngle);
-                      final jamY =
-                          center.dy - (radius * 0.5) * math.cos(_jamAngle);
-                      final menitX =
-                          center.dx + (radius * 0.75) * math.sin(_menitAngle);
-                      final menitY =
-                          center.dy - (radius * 0.75) * math.cos(_menitAngle);
-                      final distJam = math.sqrt(
-                        math.pow(details.localPosition.dx - jamX, 2) +
-                            math.pow(details.localPosition.dy - jamY, 2),
-                      );
-                      final distMenit = math.sqrt(
-                        math.pow(details.localPosition.dx - menitX, 2) +
-                            math.pow(details.localPosition.dy - menitY, 2),
-                      );
-                      setState(() {
-                        if (distJam < distMenit) {
-                          _jamAngle = normalizedAngle;
-                        } else {
-                          _menitAngle = normalizedAngle;
-                        }
-                        _jumlahKoreksi++;
-                      });
-                    },
+                    onPanUpdate: _iotTerhubung
+                        ? null // kalau IoT terhubung, disable drag manual
+                        : (details) {
+                            final angle = math.atan2(
+                                  details.localPosition.dy - center.dy,
+                                  details.localPosition.dx - center.dx,
+                                ) +
+                                math.pi / 2;
+                            final normalizedAngle =
+                                angle < 0 ? angle + 2 * math.pi : angle;
+                            final jamX = center.dx +
+                                (radius * 0.5) * math.sin(_jamAngle);
+                            final jamY = center.dy -
+                                (radius * 0.5) * math.cos(_jamAngle);
+                            final menitX = center.dx +
+                                (radius * 0.75) * math.sin(_menitAngle);
+                            final menitY = center.dy -
+                                (radius * 0.75) * math.cos(_menitAngle);
+                            final distJam = math.sqrt(
+                              math.pow(details.localPosition.dx - jamX, 2) +
+                                  math.pow(details.localPosition.dy - jamY, 2),
+                            );
+                            final distMenit = math.sqrt(
+                              math.pow(details.localPosition.dx - menitX, 2) +
+                                  math.pow(
+                                      details.localPosition.dy - menitY, 2),
+                            );
+                            setState(() {
+                              if (distJam < distMenit) {
+                                _jamAngle = normalizedAngle;
+                              } else {
+                                _menitAngle = normalizedAngle;
+                              }
+                              _jumlahKoreksi++;
+                            });
+                          },
                     child: CustomPaint(
                       painter: ClockPainter(
                         jamAngle: _jamAngle,
@@ -278,7 +367,8 @@ class _JamScreenState extends State<JamScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(width: 20, height: 4, color: const Color(0xFF1A237E)),
+                Container(
+                    width: 20, height: 4, color: const Color(0xFF1A237E)),
                 const SizedBox(width: 4),
                 const Text('Jarum Jam  ', style: TextStyle(fontSize: 12)),
                 Container(width: 20, height: 4, color: Colors.red),
@@ -322,12 +412,12 @@ class ClockPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2;
 
-    canvas.drawCircle(center, radius,
-        Paint()
+    canvas.drawCircle(
+        center, radius, Paint()
           ..color = Colors.white
           ..style = PaintingStyle.fill);
-    canvas.drawCircle(center, radius,
-        Paint()
+    canvas.drawCircle(
+        center, radius, Paint()
           ..color = const Color(0xFF1A237E)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 4);
@@ -390,7 +480,8 @@ class ClockPainter extends CustomPainter {
         ..strokeCap = StrokeCap.round,
     );
 
-    canvas.drawCircle(center, 6, Paint()..color = const Color(0xFF1A237E));
+    canvas.drawCircle(
+        center, 6, Paint()..color = const Color(0xFF1A237E));
   }
 
   @override
