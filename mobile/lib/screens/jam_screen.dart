@@ -395,4 +395,4 @@ class ClockPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(ClockPainter oldDelegate) => true;
-}[]
+}
