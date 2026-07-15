@@ -13,9 +13,10 @@ class _StepData {
   final String emoji;
   final String judul;
   final String isi;
-  final Color warna;
+  final Color warnaMuda;
+  final Color warnaTua;
 
-  _StepData(this.emoji, this.judul, this.isi, this.warna);
+  _StepData(this.emoji, this.judul, this.isi, this.warnaMuda, this.warnaTua);
 }
 
 class _MateriScreenState extends State<MateriScreen> {
@@ -24,48 +25,51 @@ class _MateriScreenState extends State<MateriScreen> {
   final List<_StepData> _steps = [
     _StepData(
       '📖',
-      'Ayo Mengenal Teks Narasi!',
-      'Teks narasi adalah cerita yang menceritakan urutan kejadian, seperti kegiatan sehari-hari.\n\n'
-          'Contoh: "Pak Budi berangkat ke sawah pukul 06.30. Ia tiba di sawah pukul 07.00."\n\n'
-          'Di dalam cerita, sering ada informasi tentang WAKTU. Nah, kita akan belajar menemukan informasi waktu itu sambil membaca jam analog!',
-      Color(0xFFE3F2FD),
+      'Ayo Mengenal\nTeks Narasi!',
+      'Teks narasi itu cerita yang menceritakan urutan kejadian, seperti kegiatan sehari-hari.\n\n'
+          'Contoh:\n"Pak Budi berangkat ke sawah pukul 06.30. Ia tiba di sawah pukul 07.00."\n\n'
+          'Di dalam cerita, sering ada info tentang WAKTU. Yuk kita cari sambil belajar jam! 🕐',
+      Color(0xFFBBDEFB),
+      Color(0xFF1565C0),
     ),
     _StepData(
       '🤔',
-      'Yuk, Kita Pikirkan Bersama!',
-      'Coba pikirkan pertanyaan ini:\n\n'
-          '"Kalau ada orang berangkat sekolah pukul 07.15, dan sampai 30 menit kemudian, jam berapa dia sampai di sekolah?"\n\n'
-          'Diskusikan dengan pasanganmu! Bagaimana cara kalian menemukan jawabannya?',
-      Color(0xFFFFF3E0),
+      'Yuk, Kita\nPikirkan Bersama!',
+      'Coba pikirkan pertanyaan ini bersama teman:\n\n'
+          '"Kalau ada yang berangkat sekolah pukul 07.15, dan sampai 30 menit kemudian, jam berapa dia sampai di sekolah?"\n\n'
+          'Diskusikan dengan pasanganmu! Gimana caranya menemukan jawabannya? 💬',
+      Color(0xFFFFE0B2),
+      Color(0xFFE65100),
     ),
     _StepData(
       '👫',
-      'Waktunya Kerja Berpasangan! (LKPD)',
-      'Sekarang, bersama pasanganmu:\n\n'
-          '1️⃣ Dengarkan cerita yang akan dibacakan guru\n'
-          '2️⃣ Catat informasi WAKTU yang kalian dengar di LKPD\n'
-          '3️⃣ Diskusikan bersama pasangan, tentukan jawabannya\n'
-          '4️⃣ Coba praktikkan di jam analog TikTak\n\n'
-          'Contoh soal untuk kalian diskusikan:\n'
-          '"Salsa makan siang pukul 12.00 selama 25 menit. Pukul berapa Salsa selesai makan?"\n\n'
-          'Tuliskan jawaban kelompok kalian di kertas LKPD ya!',
-      Color(0xFFE8F5E9),
+      'Waktunya\nKerja Berpasangan!',
+      '1️⃣ Dengarkan cerita dari guru\n\n'
+          '2️⃣ Catat info WAKTU yang kalian dengar di LKPD\n\n'
+          '3️⃣ Diskusikan bersama pasangan\n\n'
+          '4️⃣ Praktikkan di jam analog TikTak\n\n'
+          'Contoh soal:\n"Salsa makan siang pukul 12.00 selama 25 menit. Pukul berapa Salsa selesai makan?"',
+      Color(0xFFC8E6C9),
+      Color(0xFF2E7D32),
     ),
     _StepData(
       '🔍',
-      'Buktikan Jawabanmu!',
-      'Setelah berdiskusi, coba putar jarum jam analog sesuai jawaban kelompok kalian.\n\n'
-          'Perhatikan: apakah jawabannya sudah tepat? Kalau masih ragu, dengarkan lagi ceritanya, lalu coba sekali lagi bersama pasanganmu.',
-      Color(0xFFFCE4EC),
+      'Buktikan\nJawabanmu!',
+      'Setelah berdiskusi, coba putar jarum jam sesuai jawaban kelompok kalian.\n\n'
+          'Perhatikan baik-baik: apakah jawabannya sudah tepat?\n\n'
+          'Kalau masih ragu, dengarkan lagi ceritanya, lalu coba sekali lagi bersama pasanganmu! 💪',
+      Color(0xFFF8BBD0),
+      Color(0xFFAD1457),
     ),
     _StepData(
       '🎤',
-      'Ceritakan ke Teman-teman!',
-      'Setiap kelompok akan maju ke depan kelas untuk:\n\n'
-          '• Menceritakan kembali isi cerita yang disimak\n'
-          '• Menjelaskan bagaimana kelompok kalian menemukan jawabannya\n\n'
-          'Setelah semua kelompok presentasi, kita simpulkan bersama apa yang sudah kita pelajari hari ini!',
-      Color(0xFFF3E5F5),
+      'Ceritakan ke\nTeman-teman!',
+      'Setiap kelompok maju ke depan kelas untuk:\n\n'
+          '• Menceritakan kembali isi cerita yang disimak\n\n'
+          '• Menjelaskan cara kelompok kalian menemukan jawabannya\n\n'
+          'Setelah semua presentasi, kita simpulkan bersama yuk apa yang sudah kita pelajari! 🌟',
+      Color(0xFFE1BEE7),
+      Color(0xFF6A1B9A),
     ),
   ];
 
@@ -90,98 +94,158 @@ class _MateriScreenState extends State<MateriScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF1A237E),
         title: const Text('Materi & Latihan',
-            style: TextStyle(color: Colors.white)),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            // Progress indicator
-            Row(
-              children: List.generate(_steps.length, (i) {
-                return Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: i <= _step
-                          ? const Color(0xFF1A237E)
-                          : Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(10),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+          child: Column(
+            children: [
+              // Progress indicator berupa titik bulat
+              Row(
+                children: List.generate(_steps.length, (i) {
+                  final aktif = i <= _step;
+                  return Expanded(
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: aktif ? step.warnaTua : Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                     ),
-                  ),
-                );
-              }),
-            ),
-            const SizedBox(height: 24),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: step.warna,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(step.emoji, style: const TextStyle(fontSize: 50)),
-                      const SizedBox(height: 12),
-                      Text(
-                        step.judul,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF1A237E),
+                  );
+                }),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Langkah ${_step + 1} dari ${_steps.length}',
+                style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 16),
+
+              // Kartu materi
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: step.warnaMuda,
+                      borderRadius: BorderRadius.circular(28),
+                      boxShadow: [
+                        BoxShadow(
+                          color: step.warnaTua.withOpacity(0.25),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        step.isi,
-                        style: const TextStyle(fontSize: 16, height: 1.6),
-                      ),
-                    ],
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: step.warnaTua.withOpacity(0.2),
+                                  blurRadius: 10,
+                                ),
+                              ],
+                            ),
+                            child: Text(step.emoji,
+                                style: const TextStyle(fontSize: 56)),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          step.judul,
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.w800,
+                            color: step.warnaTua,
+                            height: 1.2,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          child: Text(
+                            step.isi,
+                            style: const TextStyle(
+                              fontSize: 16.5,
+                              height: 1.7,
+                              color: Color(0xFF2E2E2E),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                if (_step > 0)
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: _prev,
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
+              const SizedBox(height: 16),
+
+              // Tombol navigasi
+              Row(
+                children: [
+                  if (_step > 0)
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _prev,
+                        icon: const Icon(Icons.arrow_back_rounded),
+                        label: const Text('Kembali',
+                            style: TextStyle(fontSize: 16)),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF1A237E),
+                          side: const BorderSide(
+                              color: Color(0xFF1A237E), width: 1.5),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18)),
+                        ),
                       ),
-                      child: const Text('Kembali', style: TextStyle(fontSize: 16)),
+                    ),
+                  if (_step > 0) const SizedBox(width: 12),
+                  Expanded(
+                    flex: 2,
+                    child: ElevatedButton.icon(
+                      onPressed: _next,
+                      icon: Icon(_step < _steps.length - 1
+                          ? Icons.arrow_forward_rounded
+                          : Icons.check_circle_outline),
+                      label: Text(
+                        _step < _steps.length - 1 ? 'Lanjut' : 'Selesai',
+                        style: const TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: step.warnaTua,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18)),
+                      ),
                     ),
                   ),
-                if (_step > 0) const SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: ElevatedButton(
-                    onPressed: _next,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1A237E),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                    ),
-                    child: Text(
-                      _step < _steps.length - 1 ? 'Lanjut ➡️' : 'Selesai ✅',
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
