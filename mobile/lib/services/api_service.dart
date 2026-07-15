@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   // Ganti dengan IP laptop kamu saat testing
-  static const String baseUrl = 'http://10.247.102.109:5000';
+  static const String baseUrl = 'http://10.227.121.225:5000';
 
   // ========== AUTH ==========
 
@@ -114,6 +114,7 @@ class ApiService {
     required double waktuRespons,
     required int jumlahKoreksi,
     required int jumlahUlangAudio,
+    String jenisSesi = 'latihan',
   }) async {
     final response = await http.post(
       Uri.parse('$baseUrl/api/sesi/'),
@@ -126,6 +127,7 @@ class ApiService {
         'waktu_respons': waktuRespons,
         'jumlah_koreksi': jumlahKoreksi,
         'jumlah_ulang_audio': jumlahUlangAudio,
+        'jenis_sesi': jenisSesi,
       }),
     );
     return jsonDecode(response.body);
@@ -138,13 +140,20 @@ class ApiService {
     return jsonDecode(response.body);
   }
 
-
   // ========== RESET JAM ==========
   static Future<Map<String, dynamic>> resetJam(int siswaId) async {
     final response = await http.post(
       Uri.parse('$baseUrl/api/iot/reset'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'siswa_id': siswaId}),
+    );
+    return jsonDecode(response.body);
+  }
+
+  // ========== SISWA LOGIN VIA KODE KELAS ==========
+  static Future<Map<String, dynamic>> getKelasByKode(String kode) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/kelas/kode/$kode'),
     );
     return jsonDecode(response.body);
   }

@@ -175,7 +175,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             kelas['nama_kelas'],
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          subtitle: Text('Tingkat ${kelas['tingkatan']}'),
+                          subtitle: Row(
+                            children: [
+                              Text('Tingkat ${kelas['tingkatan']}  •  '),
+                              const Icon(Icons.vpn_key, size: 14, color: Color(0xFF1A237E)),
+                              const SizedBox(width: 2),
+                              Text(
+                                kelas['kode_kelas'] ?? '-',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF1A237E),
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                            ],
+                          ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
