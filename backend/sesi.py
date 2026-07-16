@@ -97,3 +97,38 @@ def get_riwayat(siswa_id):
     conn.close()
 
     return jsonify({'success': True, 'data': [dict(row) for row in rows]}), 200
+
+@sesi_bp.route('/pretest-posttest/<int:siswa_id>', methods=['GET'])
+def get_pretest_posttest(siswa_id):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT s.*, sq.cerita, sq.jawaban_jam as benar_jam, sq.jawaban_menit as benar_menit
+        FROM sesi s
+        JOIN soal sq ON s.soal_id = sq.id
+        WHERE s.siswa_id = ? AND s.jenis_sesi = 'pretest'
+        ORDER BY s.created_at DESC
+        LIMIT 1
+    ''', (siswa_id,))
+    pretest_row = cursor.fetchone()
+
+    cursor.execute('''
+        SELECT s.*, sq.cerita, sq.jawaban_jam as benar_jam, sq.jawaban_menit as benar_menit
+        FROM sesi s
+        JOIN soal sq ON s.soal_id = sq.id
+        WHERE s.siswa_id = ? AND s.jenis_sesi = 'posttest'
+        ORDER BY s.created_at DESC
+        LIMIT 1
+    ''', (siswa_id,))
+    posttest_row = cursor.fetchone()
+
+    conn.close()
+
+    return jsonify({
+        'success': True,
+        'data': {
+            'pretest': dict(pretest_row) if pretest_row else None,
+            'posttest': dict(posttest_row) if posttest_row else None,
+        }
+    }), 200

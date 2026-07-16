@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const Text(
-                  'Belajar Jam Analog Sambil Menyimak',
+                  'Integrasi Literasi dan Numerasi',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white70,

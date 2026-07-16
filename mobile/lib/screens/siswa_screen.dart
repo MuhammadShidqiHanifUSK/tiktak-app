@@ -12,6 +12,7 @@ class SiswaScreen extends StatefulWidget {
 
 class _SiswaScreenState extends State<SiswaScreen> {
   Map<String, dynamic>? detailData;
+  Map<String, dynamic>? prePostData;
   bool isLoading = true;
 
   @override
@@ -24,8 +25,12 @@ class _SiswaScreenState extends State<SiswaScreen> {
     setState(() => isLoading = true);
     try {
       final result = await ApiService.getDetailSiswa(widget.siswa['id']);
+      final prePost = await ApiService.getPretestPosttest(widget.siswa['id']);
       if (result['success']) {
         setState(() => detailData = result['data']);
+      }
+      if (prePost['success']) {
+        setState(() => prePostData = prePost['data']);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -54,6 +59,137 @@ class _SiswaScreenState extends State<SiswaScreen> {
     }
   }
 
+  Widget _buildPrePostCard() {
+    final pretest = prePostData?['pretest'];
+    final posttest = prePostData?['posttest'];
+
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Row(
+              children: [
+                Icon(Icons.compare_arrows, color: Color(0xFF1A237E)),
+                SizedBox(width: 8),
+                Text(
+                  'Hasil Pretest vs Posttest',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(child: _buildSesiBox('📝 Pretest', pretest, Colors.blue)),
+                const SizedBox(width: 12),
+                Expanded(child: _buildSesiBox('✅ Posttest', posttest, Colors.green)),
+              ],
+            ),
+            if (pretest != null && posttest != null) ...[
+              const SizedBox(height: 16),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: _getKesimpulanWarna(pretest, posttest).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  _getKesimpulanText(pretest, posttest),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: _getKesimpulanWarna(pretest, posttest),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSesiBox(String label, Map<String, dynamic>? sesi, Color warna) {
+    if (sesi == null) {
+      return Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+            const SizedBox(height: 8),
+            const Text('Belum dikerjakan', style: TextStyle(fontSize: 12, color: Colors.grey)),
+          ],
+        ),
+      );
+    }
+
+    final benar = sesi['adalah_benar'] == 1;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: warna.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: warna.withOpacity(0.3)),
+      ),
+      child: Column(
+        children: [
+          Text(label, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: warna)),
+          const SizedBox(height: 8),
+          Icon(
+            benar ? Icons.check_circle : Icons.cancel,
+            color: benar ? Colors.green : Colors.red,
+            size: 28,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            benar ? 'Benar' : 'Salah',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: benar ? Colors.green : Colors.red,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Jawaban: ${sesi['jawaban_jam']}:${sesi['jawaban_menit'].toString().padLeft(2, '0')}',
+            style: const TextStyle(fontSize: 11),
+          ),
+          Text(
+            'Waktu: ${sesi['waktu_respons']}s',
+            style: const TextStyle(fontSize: 11, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getKesimpulanWarna(Map<String, dynamic> pre, Map<String, dynamic> post) {
+    final preBenar = pre['adalah_benar'] == 1;
+    final postBenar = post['adalah_benar'] == 1;
+    if (!preBenar && postBenar) return Colors.green;
+    if (preBenar && !postBenar) return Colors.red;
+    return Colors.blueGrey;
+  }
+
+  String _getKesimpulanText(Map<String, dynamic> pre, Map<String, dynamic> post) {
+    final preBenar = pre['adalah_benar'] == 1;
+    final postBenar = post['adalah_benar'] == 1;
+    if (!preBenar && postBenar) return '🎉 Ada peningkatan! Siswa berhasil menjawab benar setelah belajar.';
+    if (preBenar && !postBenar) return '⚠️ Perlu perhatian, hasil posttest menurun dari pretest.';
+    if (preBenar && postBenar) return '✅ Konsisten menjawab benar di kedua tes.';
+    return 'ℹ️ Masih perlu bimbingan lebih lanjut di kedua tes.';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,12 +202,13 @@ class _SiswaScreenState extends State<SiswaScreen> {
         ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : detailData == null
-              ? const Center(child: Text('Data tidak ditemukan'))
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
+      body: SafeArea(
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : detailData == null
+                ? const Center(child: Text('Data tidak ditemukan'))
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -127,9 +264,13 @@ class _SiswaScreenState extends State<SiswaScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Card statistik
+                      // Card Pretest vs Posttest (BARU)
+                      _buildPrePostCard(),
+                      const SizedBox(height: 16),
+
+                      // Card statistik latihan
                       const Text(
-                        'Statistik',
+                        'Statistik Latihan',
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
@@ -160,7 +301,7 @@ class _SiswaScreenState extends State<SiswaScreen> {
 
                       // Riwayat sesi terakhir
                       const Text(
-                        'Riwayat 5 Sesi Terakhir',
+                        'Riwayat 5 Sesi Latihan Terakhir',
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
@@ -169,7 +310,7 @@ class _SiswaScreenState extends State<SiswaScreen> {
                         const Card(
                           child: Padding(
                             padding: EdgeInsets.all(16),
-                            child: Text('Belum ada sesi'),
+                            child: Text('Belum ada sesi latihan'),
                           ),
                         )
                       else
@@ -208,6 +349,7 @@ class _SiswaScreenState extends State<SiswaScreen> {
                     ],
                   ),
                 ),
+      ),
     );
   }
 

@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   // Ganti dengan IP laptop kamu saat testing
-  static const String baseUrl = 'http://10.227.121.225:5000';
+  static const String baseUrl = 'http://10.180.134.109:5000';
 
   // ========== AUTH ==========
 
@@ -154,6 +154,14 @@ class ApiService {
   static Future<Map<String, dynamic>> getKelasByKode(String kode) async {
     final response = await http.get(
       Uri.parse('$baseUrl/api/kelas/kode/$kode'),
+    );
+    return jsonDecode(response.body);
+  }
+
+  // ========== HASIL PRETEST DAN POSTTEST SISWA ==========
+  static Future<Map<String, dynamic>> getPretestPosttest(int siswaId) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/sesi/pretest-posttest/$siswaId'),
     );
     return jsonDecode(response.body);
   }

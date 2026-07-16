@@ -36,7 +36,7 @@ class _JamScreenState extends State<JamScreen> {
   WebSocketChannel? _channel;
 
   static const _ttsChannel = MethodChannel('com.tiktak/tts');
-  static const String _serverIp = '10.227.121.225'; // sesuaikan IP laptop
+  static const String _serverIp = '10.180.134.109'; // sesuaikan IP laptop
 
   @override
   void initState() {
