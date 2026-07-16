@@ -126,4 +126,52 @@ GET http://localhost:5000/api/dashboard/kelas/1
 GET http://localhost:5000/api/dashboard/siswa/1
 
 ### Siswa perlu perhatian
-GET http://localhost:5000/api/dashboard/perhatian/1
+GET http://localhost:5000/api/dashboard/perhatian/
+
+### Evaluasi 1 - Beni senam
+POST http://localhost:5000/api/soal/
+Content-Type: application/json
+
+{
+    "cerita": "Setiap hari Sabtu, Beni mengikuti senam pagi bersama teman-temannya. Senam dimulai pukul 07.00 dan senam berlangsung selama 45 menit. Setelah berolahraga, guru mengajak semua siswa minum air putih dan makan buah pisang yang telah dibawa dari rumah. Guru menjelaskan bahwa olahraga yang rutin dan makanan bergizi membantu tubuh menjadi kuat sehingga tidak mudah sakit. Pukul berapa senam selesai?",
+    "jawaban_jam": 7,
+    "jawaban_menit": 45,
+    "tingkat_kesulitan": 1,
+    "jenis": "evaluasi"
+}
+
+### Evaluasi 2 - Salsa makan siang
+POST http://localhost:5000/api/soal/
+Content-Type: application/json
+
+{
+    "cerita": "Salsa selalu membawa bekal dari rumah. Hari ini ia membawa nasi, ayam, tumis wortel, dan jeruk. Saat waktu makan siang pukul 12.00, Salsa makan bersama teman-temannya selama 25 menit. Guru menjelaskan bahwa makanan bergizi seimbang terdiri atas makanan pokok, lauk, sayur, buah, dan air putih. Dengan makanan yang bergizi, tubuh menjadi lebih sehat dan siap mengikuti kegiatan belajar. Pukul berapa Salsa selesai makan?",
+    "jawaban_jam": 0,
+    "jawaban_menit": 25,
+    "tingkat_kesulitan": 1,
+    "jenis": "evaluasi"
+}
+
+### Evaluasi 3 - Dito istirahat
+POST http://localhost:5000/api/soal/
+Content-Type: application/json
+
+{
+    "cerita": "Saat cuaca sangat panas, guru mengingatkan siswa untuk banyak minum air putih. Pada waktu istirahat pukul 10.00, Dito bermain bersama teman-temannya selama 30 menit. Setelah bermain, Dito langsung minum air putih sebelum masuk kelas kembali. Pukul berapa Dito minum air putih setelah bermain?",
+    "jawaban_jam": 10,
+    "jawaban_menit": 30,
+    "tingkat_kesulitan": 1,
+    "jenis": "evaluasi"
+}
+
+### Evaluasi 4 - Siska tidur
+POST http://localhost:5000/api/soal/
+Content-Type: application/json
+
+{
+    "cerita": "Malam hari, Siska belajar mulai pukul 19.30 hingga pukul 20.30. Setelah menyiapkan buku untuk esok hari, ia langsung tidur satu jam kemudian. Keesokan paginya, Siska bangun dengan tubuh segar dan siap berangkat ke sekolah. Pukul berapa Siska mulai tidur?",
+    "jawaban_jam": 9,
+    "jawaban_menit": 30,
+    "tingkat_kesulitan": 1,
+    "jenis": "evaluasi"
+}

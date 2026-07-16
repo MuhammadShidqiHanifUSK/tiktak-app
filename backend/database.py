@@ -106,6 +106,12 @@ def init_db():
         cursor.execute("ALTER TABLE sesi ADD COLUMN jenis_sesi TEXT DEFAULT 'latihan'")
         conn.commit()
 
+    cursor.execute("PRAGMA table_info(soal)")
+    kolom_soal = [k[1] for k in cursor.fetchall()]
+    if 'jenis' not in kolom_soal:
+        cursor.execute("ALTER TABLE soal ADD COLUMN jenis TEXT DEFAULT 'latihan'")
+        conn.commit()
+
     conn.close()
     print("Database TikTak berhasil diinisialisasi!")
 

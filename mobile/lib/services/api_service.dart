@@ -165,4 +165,12 @@ class ApiService {
     );
     return jsonDecode(response.body);
   }
+
+  // ========== SOAL EVALUASI ==========
+  static Future<Map<String, dynamic>> getSoalEvaluasi() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/soal/evaluasi'),
+    );
+    return jsonDecode(response.body);
+  }
 }

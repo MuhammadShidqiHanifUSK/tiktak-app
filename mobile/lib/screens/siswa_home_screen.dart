@@ -18,8 +18,7 @@ class _SiswaHomeScreenState extends State<SiswaHomeScreen> {
   Future<Map<String, dynamic>?> _ambilSoal() async {
     setState(() => _isLoadingSoal = true);
     try {
-      final result =
-          await ApiService.getSoal(SiswaSession.levelKemampuan ?? 1);
+      final result = await ApiService.getSoalEvaluasi();
       setState(() => _isLoadingSoal = false);
       if (result['success']) {
         return result['data'];
@@ -27,7 +26,7 @@ class _SiswaHomeScreenState extends State<SiswaHomeScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(result['message'] ?? 'Soal tidak ditemukan untuk level ini!'),
+              content: Text(result['message'] ?? 'Soal evaluasi belum tersedia!'),
               backgroundColor: Colors.red,
             ),
           );

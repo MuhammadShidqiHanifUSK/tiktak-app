@@ -26,9 +26,32 @@ class _MateriScreenState extends State<MateriScreen> {
     _StepData(
       '📖',
       'Ayo Mengenal\nTeks Narasi!',
-      'Teks narasi itu cerita yang menceritakan urutan kejadian, seperti kegiatan sehari-hari.\n\n'
+      'Teks narasi adalah teks yang menceritakan suatu peristiwa atau kejadian secara beruntun dan mendetail (dari awal, tengah, hingga akhir) dengan urutan waktu atau bersifat kronologis.\n\n'
+      'Tujuan dari teks ini adalah untuk menceritakan kepada pembaca seolah-olah mereka sedang berada di dalam cerita tersebut atau sedang mengalami hal tersebut dan untuk menambah wawasan pembaca\n\n'
           'Contoh:\n"Pak Budi berangkat ke sawah pukul 06.30. Ia tiba di sawah pukul 07.00."\n\n'
           'Di dalam cerita, sering ada info tentang WAKTU. Yuk kita cari sambil belajar jam! 🕐',
+      Color(0xFFBBDEFB),
+      Color(0xFF1565C0),
+    ),
+    _StepData(
+      '📖',
+      'Ciri-Ciri Teks Narasi',
+        '1. Berisi peristiwa, baik yang nyata, imajinasi, maupun gabungan dari keduanya\n'
+        '2. Terdiri atas beberaoa paragraf yang tiap-tiap paragraf menitikberatkan pada perbuatan/peristiwa\n'
+        '3. Disusun berdasarkan kronologi atau urutan waktu yang di dalamnya terdapat konflik',
+      Color(0xFFBBDEFB),
+      Color(0xFF1565C0),
+    ),
+    _StepData(
+      '📖',
+      'Struktur Teks Narasi',
+        '1. Tema atau gagasan pokok\n'
+        'Misalnya: Pertemanan, keluarga, pengalaman\n'
+        '2. Latar (tempat dan waktu)\n'
+        '3. Alur atau pola penyampaian peristiwa dalam cerita.\n'
+        'Alur ini bisa maju, mundur, maupun maju mundur.\n'
+        '4. Tokoh atau karakter yang ada dalam cerita\n'
+        '5. Sudut pandang atau arah pandangan.',
       Color(0xFFBBDEFB),
       Color(0xFF1565C0),
     ),
@@ -42,13 +65,12 @@ class _MateriScreenState extends State<MateriScreen> {
       Color(0xFFE65100),
     ),
     _StepData(
-      '👫',
-      'Waktunya\nKerja Berpasangan!',
+      '💡',
+      'Waktunya Diskusi!\nAyo dengarkan instruksi dari guru.',
       '1️⃣ Dengarkan cerita dari guru\n\n'
           '2️⃣ Catat info WAKTU yang kalian dengar di LKPD\n\n'
           '3️⃣ Diskusikan bersama pasangan\n\n'
-          '4️⃣ Praktikkan di jam analog TikTak\n\n'
-          'Contoh soal:\n"Salsa makan siang pukul 12.00 selama 25 menit. Pukul berapa Salsa selesai makan?"',
+          '4️⃣ Praktikkan di jam analog TikTak\n\n',
       Color(0xFFC8E6C9),
       Color(0xFF2E7D32),
     ),
